@@ -1,0 +1,52 @@
+:root {
+    --fontsize-title-form: 1rem;
+    --color-border-input : rgb(30, 163, 252);
+    --margin-input-top   : 0.3rem;
+
+}
+
+.product-form {
+    width : 70%;
+    margin: 0 auto;
+}
+
+.form-control label,
+.form-control input,
+.form-control textarea {
+    display: block;
+}
+
+.form-control label {
+    font-size  : var(--fontsize-title-form);
+}
+
+.form-control input {
+    border       : 1px solid var(--color-border-input);
+    font         : inherit;
+    border-radius: 2px;
+    padding      : 0.3rem 0;
+    margin       : var(--margin-input-top) 0;
+}
+
+.form-control textarea {
+    border: 1px solid var(--color-border-input);
+    margin: var(--margin-input-top) 0;
+
+
+}
+
+button {
+    font            : inherit;
+    padding         : 0.5rem 1rem;
+    border          : 1px solid var( --color-border-input);
+    background-color: white;
+    color           : rgb(3, 97, 126);
+    border-radius   : 3px;
+    cursor          : pointer;
+}
+
+button:hover {
+    color           : white;
+    background-color: rgba(0, 131, 218, 0.596);
+
+}

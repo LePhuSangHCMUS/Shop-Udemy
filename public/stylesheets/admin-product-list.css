@@ -1,0 +1,76 @@
+:root{
+    --padding-btn-top-bottom:0.5rem;
+    --padding-btn-right-left:1rem;
+}
+.grid {
+    display  : flex;
+    flex-wrap: wrap;
+}
+
+.card-product-item {
+    width     : 30%;
+    margin    : 2rem auto;
+    text-align: center;
+    border    : 2px solid gray;
+    box-shadow: 2px;
+}
+
+.card-product-item .card-header {
+    margin: 1rem 0;
+}
+
+.card-product-item .card-header .product__title {
+    font-weight: bold;
+}
+
+.card-product-item .card-image {
+    width : 100%;
+    margin: 0 auto;
+}
+
+.card-product-item .card-image img {
+    width: 100%;
+
+}
+
+.card-product-item .card-content .product__price {
+    margin: 1rem 0;
+}
+.card-product-item .card-action .btn {
+    margin          : 1rem 0;
+    padding         : var(--padding-btn-top-bottom) var(  --padding-btn-right-left);
+    border          : 1px solid#007BFF;
+    border-radius   : 4px;
+    background-color: white;
+    color: #007BFF;
+    font-weight     : bold;
+
+}
+
+
+.card-product-item .card-action .btn:hover {
+    background-color: #007BFF;
+    cursor          : pointer;
+    color: white;
+
+}
+
+.card-product-item .card-action .btn-edit {
+    border-color:#28A745; 
+    margin-right: 1rem;
+    color: #28A745;
+}
+.card-product-item .card-action .btn-edit:hover {
+    background-color:#28A745; 
+}
+.card-product-item .card-action .btn-delete {
+    border-color: #FFC107;
+    color:  #FFC107;
+}
+.card-product-item .card-action .btn-delete:hover {
+    background-color: #FFC107;
+}
+.card-product-item .card-action {
+display: flex;
+justify-content: center;
+}

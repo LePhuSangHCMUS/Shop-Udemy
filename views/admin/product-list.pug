@@ -1,0 +1,27 @@
+include ../layouts/main-layout.pug
+block head
+    link(rel="stylesheet", href="/stylesheets/admin-product-list.css")
+block content
+    main
+        .grid
+            each product in products
+                article.card-product-item 
+                    header.card-header
+                        h1.product__title #{product.title}
+                        .card-image
+                             img(src=product.urlImage, alt=product.title, srcset="")  
+                    .card-content
+                        h2.product__price $#{product.price}
+                        p.product__description #{product.description}
+                    .card-action
+                        a.link-edit(href=('/admin/edit-product/'+ product.productId))
+                            button.btn.btn-edit Edit
+                            //-Delete nên là là form dung post vì chỉ có quản trị mới có quyền delete sản phẩm
+                            //-Và cần phải vào trang quản trị mới submit được
+                        form.form-delete(action=('/admin/delete-product/'+ product.productId), method="POST")
+                            button.btn.btn-delete(type='submit') Delete
+                
+          
+                
+             
+            

@@ -1,0 +1,30 @@
+:root{
+    --padding-btn-top-bottom:0.5rem;
+    --padding-btn-right-left:1rem;
+}
+
+.grid{
+    text-align: center;
+}
+.card-product-item .card-content .product__price {
+    margin: 1rem 0;
+}
+
+.card-product-item .form-add-to-cart .btn {
+    margin          : 1rem 0;
+    padding         : var(--padding-btn-top-bottom) var(  --padding-btn-right-left);
+    border          : 1px solid#007BFF;
+    border-radius   : 4px;
+    background-color: white;
+    color: #007BFF;
+    font-weight     : bold;
+
+}
+
+
+.card-product-item .form-add-to-cart .btn:hover {
+    background-color: #007BFF;
+    cursor          : pointer;
+    color: white;
+
+}

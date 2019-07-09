@@ -1,0 +1,19 @@
+include ../layouts/main-layout.pug
+block  head
+    link(rel="stylesheet", href="/stylesheets/form-add-product.css")
+block content
+    main
+        form.product-form(action=isEditMode?'/admin/edit-product':'/admin/add-product' , method='POST')
+            .form-control
+                label Title
+                input(type="text" name="title" value=productEdit?productEdit.title:'' required)
+            .form-control
+                label Url Image
+                input(type="text" name="urlImage" value=productEdit?productEdit.urlImage:''   required)
+            .form-control
+                label Description
+                textarea(name="description" rows="5" cols="30"  required) #{productEdit?productEdit.description:''}
+            .form-control
+                label Price
+                input(type="number" name="price"  value=productEdit?productEdit.price:'' required step='0.01')
+                button(type="submit" name="productId" value=productEdit?productEdit.productId:'') #{isEditMode?'Update Product':'Add Product'} 
