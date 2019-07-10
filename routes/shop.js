@@ -21,8 +21,11 @@ router.get('/cart',shopController.getCart );
 //delete cart
 router.post('/cart/delete',shopController.deleteProductFromCart);
 
-router.get('/orders',shopController.orders );
-router.get('/checkout',shopController.checkout );
+router.post('/orders',shopController.orders );
+router.get('/orders',shopController.getOrders );
+// router.get('/checkout',shopController.checkout );
+// router.get('/checkout',shopController.orders );
+
 
 
 module.exports = router;

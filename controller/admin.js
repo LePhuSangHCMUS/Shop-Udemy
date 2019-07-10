@@ -1,40 +1,68 @@
 //Model
+const Sequelize = require('sequelize');
 const Product = require('../models/products');
+//Sequelize exposes symbol operators that can be used for to create more complex comparisons -
+const Op = Sequelize.Op;
+
 const Cart = require('../models/cart');
+const CartItem = require('../models/cartItem');
 //Do Add and Edit Same Nen Dung Chung 1 Form
 exports.getAddProductController = function (req, res, next) {
     res.render('admin/add-edit-product', { title: 'Add Product', activeAddProduct: 'active', isEditMode: false });
 }
 
 exports.postAddProductController = function (req, res, next) {
-    const product = new Product(req.body.title, req.body.urlImage, req.body.description, req.body.price);
-    //=========User LowDB===================
-    product.save();
-    res.redirect('/shop');
-
-    //=========User My SQL===================
-    // product.save().then(result => {
-    //     res.redirect('/shop');
-
+    const title = req.body.title;
+    const urlImage = req.body.urlImage;
+    const description = req.body.description;
+    const price = req.body.price;
+    const user = req.user;
+    // Product.create({
+    //     title: title,
+    //     urlImage: urlImage,
+    //     description: description,
+    //     price: price,
+    //     userId:userId
     // })
+    //     .then(result => {
+    //         console.log('Create product');
+    //         res.redirect('/')
+    //     })
     //     .catch(err => console.log(err));
+
+    //====================Otherwise use Associating objects
+    user.createProduct({
+        title: title,
+        urlImage: urlImage,
+        description: description,
+        price: price,
+    })
+        .then(result => {
+            console.log('Create product');
+            res.redirect('/')
+        })
+        .catch(err => console.log(err));
+
 }
 //Edit Product Admin
 //admin/add-product/:producId  ---> GET
 exports.getEditProductController = function (req, res, next) {
     const productId = req.params.productId;
-    const productEdit=Product.findOneProduct(productId);
-     res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true });
+    //Lay tu middle ware khi dang nhap la ai
+    const user = req.user;
+    user.getProducts({
+        where: {
+            id: productId
+        }
+    })
+        .then(productEdit => {
+            // console.log(productEdit)
+            //Do ti tat ca nen no ra ca mang gia tri
+            res.render('admin/add-edit-product', { productEdit: productEdit[0], title: 'Edit Product', activeAddProduct: '', isEditMode: true });
 
-    // Product.findOneProduct(productId).
-    //     then(([row, fieldData]) => {
-    //         //Do tim thay mot product cung tra ve mang nen lay row[0];
-    //         const productEdit = row[0];
-    //         console.log(productEdit)
-    //         res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true });
+        })
+        .catch(err => console.log(err));
 
-    //     })
-    //     .catch(err => console.log(err));
 }
 ////admin/add-product/:producId  ---> POST
 exports.postEditProductController = function (req, res, next) {
@@ -45,44 +73,55 @@ exports.postEditProductController = function (req, res, next) {
     const price = req.body.price;
     const urlImage = req.body.urlImage;
     //edit product
-    Product.editProduct(productId, title, urlImage, description, price);
-    res.redirect('/admin/products');
+        //Bowi vi khi vao trang quan tri thi se hien thi chi nhung san pham cua nguoi dung do 
+        //nen xoa sua san pham co id trung voi no la duoc
+    //Khong can suwr dung user lam gi ca
+    Product.update({
+        title: title,
+        description: description,
+        price: price,
+        urlImage: urlImage
+    }, {
+            where: {
+                id: productId
+
+            }
+        })
+        .then(result => {
+            res.redirect('/admin/products');
+
+        })
+        .catch(err => console.log(err));
 }
 
 //Get List Prodcut Add Min
 //admin/product
 exports.getProductListController = function (req, res, next) {
-    //=========User LowDB===================
-    const products = Product.fetchAll();
-    res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active' });
-    //=========User My SQL===================
-
-    // Product.fetchAll()
-    //     .then(([rows, fieldData]) => {
-    //         console.log(rows);
-    //         console.log(fieldData)
-    //         const products = rows;
-    //         console.log(rows)
-    //         res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active' });
-
-    //     })
-    //     .catch(err => console.log(err));
+    const user = req.user;
+    user.getProducts()
+        .then(products => {
+            res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active' });
+        })
+        .catch(err => console.log(err));
 }
 exports.deleteProductController = function (req, res, next) {
-    //=========User LowDB===================
+    const productId = req.params.productId;
+        //Bowi vi khi vao trang quan tri thi se hien thi chi nhung san pham cua nguoi dung do
+        // nen xoa san pham co id trung voi no la duoc
+    //Khong can suwr dung user lam gi ca
+    Product.findOne({
+        where: {
+            id: productId
+        }
+    })
+        .then(product => {
+            return product.destroy();
+        })
+        .then(result => {
+            console.log('Delete Product Success');
+            res.redirect('/admin/products')
 
-    Product.deleteProduct(req.params.productId);
-    //Xps Admin thì xóa luon cart
-    Cart.deleteProductFormCart(req.params.productId)
-    res.redirect('/admin/products')
-    //=========User My SQL===================
-    // Product.deleteProduct(req.params.productId);
-    // //Xoa Admin thì xóa luon cart
-    // Cart.deleteProductFormCart(req.params.productId)
-    //     .then(result => {
-    //         res.redirect('/admin/products')
-
-    //     })
-    //     .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err));
 
 }

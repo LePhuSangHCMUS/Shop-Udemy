@@ -15,10 +15,10 @@ block content
                         p.product__description #{product.description}
                     .card-action
                         //- Có thể dung cách này để gửi Id addToCart nhưng nen dung cách dưới để nó chung router add-to-cart đã tạo
-                        //- form.form-delete(action=('/shop/add-to-cart/'+ product.productId), method="POST")
+                        //- form.form-delete(action=('/shop/add-to-cart/'+ product.id), method="POST")
                         form.form-add-to-cart(action='/shop/cart', method="POST")
-                             button.btn.btn-add-to-cart(type='submit' value=product.productId name='productId') Add to cart
-                        a.link-product-detail(href=("/shop/product-detail/"+product.productId))
+                             button.btn.btn-add-to-cart(type='submit' value=product.id name='productId') Add to cart
+                        a.link-product-detail(href=("/shop/product-detail/"+product.id))
                             button.btn.btn-detail Detail
                 
           

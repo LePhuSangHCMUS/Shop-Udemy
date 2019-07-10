@@ -12,7 +12,7 @@ block content
                 .card-content
                     h2.product__price $#{product.price}
                     p.product__description #{product.description}
-                form.form-add-to-cart(action=("/shop/add-to-cart/"+ product.productId), method="post")
+                form.form-add-to-cart(action=("/shop/add-to-cart/"+ product.id), method="post")
                     button.btn.btn-add-to-cart(type='submit') Add to cart
   
                 

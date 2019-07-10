@@ -2,6 +2,17 @@ include ../layouts/main-layout.pug
 block head
 block content
     h1 Order
+    main
+        if orders.length==0
+            h1 Nothing There !
+        else
+            ul
+                 each order in orders
+                    li
+                        h3 # #{order.id}
+                        ul
+                            each product in order.products
+                                li - #{product.title}      ( #{product.orderItem.quantity} ) 
                 
           
                 
