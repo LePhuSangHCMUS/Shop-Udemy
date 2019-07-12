@@ -15,13 +15,12 @@ router.get('/product-detail/:productId',shopController.getProductDetail );
 //Dùng cách khác nên không sài cách này
 //router.post('/cart/:productId',shopController.addToCart );
 //Them san pham vao cart
+router.post('/cart/delete',shopController.deleteProductFromCart);
 router.post('/cart',shopController.postCart );
 //Request  ve giao dien cart
 router.get('/cart',shopController.getCart );
 //delete cart
-router.post('/cart/delete',shopController.deleteProductFromCart);
-
-router.post('/orders',shopController.orders );
+router.post('/orders',shopController.postOrders );
 router.get('/orders',shopController.getOrders );
 // router.get('/checkout',shopController.checkout );
 // router.get('/checkout',shopController.orders );

@@ -1,18 +1,14 @@
 
 //Database 
-var sequelize = require('./util/database');
-const Product = require('./models/products')
+const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
-const Cart = require('./models/cart');
-const CartItem = require('./models/cartItem');
-const Order=require('./models/order')
-const OrderItem=require('./models/orderItem')
 //==================================================
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var bodyParser = require('body-parser');
 
 //Require Router
 var indexRouter = require('./routes/index');
@@ -34,23 +30,38 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Taok middle ware kiem tra user co trong database chua neu chua co thi khong cho di tiep
-app.use((req, res, next) => {
-  User.findByPk(1)
-    .then(user => {
-      //Tim thay moi cho di qua khong thi thoi
-      //Lay user guiwr den middleware tiep theo
-      req.user = user;
-      next();
-    })
-    .catch(err => console.log(err))
-})
+app.use(bodyParser.json());
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
+//Connect Database
+mongoConnect();
+
+//Filter User
+
+app.use((req, res, next) => {
+  try {
+    User.findOneUser('5d26e39c1c9d440000b1d798')
+      .then(user => {
+        //Do user instanceof Object not User nen khong the truy cap phuong thuc duoc
+        //Phai tao dummy user de truy cap phuong thuc
+
+        req.user = new User(user.email, user.username, user._id)
+
+        console.log(req.user.constructor.name)
+        next();
+      })
+      .catch(err => {
+      });
+
+  } catch (err) {
+    console.log(err);
+  }
+})
 
 
 //Use router
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
 //--------------------
 app.use('/admin', adminRouter);
 app.use('/shop', shopRouter);
@@ -75,47 +86,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-//==========================SEQUELIZE=================================================================
-//Association
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasMany(Product);
-Cart.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-User.hasOne(Cart);
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
-Order.belongsTo(User);
-User.hasMany(Order);
-Order.belongsToMany(Product,{through:OrderItem});
-
-sequelize
-  // .sync()
-  .sync({ force: true })// drop cac bang va tao bang moi
-  .then((result) => {
-    //Them User dau tien
-    return User.findByPk(2)
-  })
-  .then(user => {
-    //Neu chua co user
-    if (!user) {
-      return User.create({ name: 'Mai', email: 'lephusangus@gmail.com' })
-      .then(user=>{
-        console.log('Create Cart User : ',user.id);
-        user.createCart();
-      })
-      .catch(err=>console.log(err))
-    }
-    return Promise.resolve(user)
-    //Or
-    //Return user (sẽ ép thành promise)
-
-  })
-  .then(user => {
-    //Neu co nguoi dung se tao ra cart
-    // console.log(user)
-  })
-  .catch(err => console.log(err))
-
 
 
 module.exports = app;

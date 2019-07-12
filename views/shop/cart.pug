@@ -6,11 +6,11 @@ block content
         h1 Cart is empty
     else
         ul.product-list
-            each product in productsCart
+            each productCart in productsCart
                 li.card-product-item 
-                    p.title #{product.title}  (#{product.cartItem.quantity}) 
+                    p.title #{productCart.title}  (#{productCart.quantity}) 
                     form.form-action(action="/shop/cart/delete", method="post")
-                        button.btn.btn-delete-cart(type='submit' value=product.id name='productId') Delete
+                        button.btn.btn-delete-cart(type='submit' value=productCart._id name='productCartId') Delete
         form.form-action(action="/shop/orders", method="post")
              button.btn.btn-delete-cart(type='submit') Order Now !
     

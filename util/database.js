@@ -1,19 +1,29 @@
-// // get the client
-// const mysql = require('mysql2');
- 
-// // create the connection to database
-// const pool  = mysql.createPool({
-//   host: 'localhost',
-//   user: 'root',
-//   database: 'shop',
-//   password:'password'
-// });
- 
-// module.exports=pool.promise();
-
-//=======================USE Sequelize======================================
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('shop','root','Nu06081995',{dialect:'mysql',host:'localhost'});
 
 
-module.exports=sequelize;
+//=====================MONGODB====================================
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
+var db;
+// Connection URL
+const url = 'mongodb+srv://PhuSang:Nu06081995@cluster0-qjak0.mongodb.net/test?retryWrites=true&w=majority';
+const dbName = 'Shop';
+// Use connect method to connect to the server
+const mongoConnect = () => {
+    MongoClient.connect(url)
+        .then(client => {
+            console.log("Connected Success !!!");
+            db = client.db(dbName);
+        })
+        .catch(err => {
+            console.log(err)
+        });
+}
+const getDb = () => {
+    if (db) {
+        return db;
+    }
+    throw ' database not found !'
+}
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
+

@@ -9,11 +9,11 @@ block content
                 input(type="text" name="title" value=productEdit?productEdit.title:'' required)
             .form-control
                 label Url Image
-                input(type="text" name="urlImage" value=productEdit?productEdit.urlImage:''   required)
+                input(type="text" name="imageUrl" value=productEdit?productEdit.imageUrl:''   required)
             .form-control
                 label Description
                 textarea(name="description" rows="5" cols="30"  required) #{productEdit?productEdit.description:''}
             .form-control
                 label Price
                 input(type="number" name="price"  value=productEdit?productEdit.price:'' required step='0.01')
-                button(type="submit" name="productId" value=productEdit?productEdit.id:'') #{isEditMode?'Update Product':'Add Product'} 
+                button(type="submit" name="productId" value=productEdit?productEdit._id:'') #{isEditMode?'Update Product':'Add Product'} 
