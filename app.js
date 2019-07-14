@@ -1,7 +1,8 @@
 
 //Database 
-const mongoConnect = require('./util/database').mongoConnect;
-const User = require('./models/user');
+const mongooseConnect = require('./util/database');
+const ModelUser = require('./models/user');
+const ObjectID = require('mongodb').ObjectID;
 //==================================================
 var createError = require('http-errors');
 var express = require('express');
@@ -35,29 +36,38 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Connect Database
-mongoConnect();
+try {
+  mongooseConnect()
+    .then(result => {
+      console.log("Connected success")
+    })
+    .catch(err => {
+      console.log(err)
+    });
 
+} catch (err) {
+  console.log(err)
+}
+//=============================================
 //Filter User
 
 app.use((req, res, next) => {
   try {
-    User.findOneUser('5d26e39c1c9d440000b1d798')
+    ModelUser.findById(new ObjectID('5d26e39c1c9d440000b1d798'))
       .then(user => {
-        //Do user instanceof Object not User nen khong the truy cap phuong thuc duoc
-        //Phai tao dummy user de truy cap phuong thuc
-
-        req.user = new User(user.email, user.username, user._id)
-
-        console.log(req.user.constructor.name)
+        console.log(user);
+        req.user = user;
         next();
       })
-      .catch(err => {
-      });
-
   } catch (err) {
     console.log(err);
+
   }
+
+
+
 })
+
 
 
 //Use router

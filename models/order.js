@@ -1,24 +1,44 @@
 
-const getDb = require('../util/database').getDb;
+const ObjectID = require('mongodb').ObjectID;
+const Schema = require('mongoose').Schema;
+const Model = require('mongoose').model;
+const OrderSchema = new Schema({
+    userId: {
+        type: ObjectID,
+        ref:'user',
+        required: true
+    },
+    productsCart:
+        [
+            {
 
-module.exports = class Order {
-    //Product full and quantiti trong cart giong nhu phan get cart
-    constructor(orderIdUserCreateOrder, productsCart,userId) {
-        this._id = orderIdUserCreateOrder;
-        this.productsCart = productsCart;
-        this.userId=userId;
-    }
-    save() {
-        const db = getDb();
-        const collection = db.collection('orders');
-        return collection.insertOne(this)
-            .then(result => {
-                console.log("Insert 1 new Order")
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
-    
-
-}
+                productId: {
+                    type: ObjectID,
+                    ref:'product',
+                    required: true
+                },
+                title: {
+                    type: String,
+                    required: true
+                },
+                imageUrl:{
+                    type: String,
+                    required: true
+                },
+                description:{
+                    type: String,
+                    required: true  
+                },
+                price:{
+                    type: Number,
+                    required: true
+                },
+                quantity:{
+                    type: Number,
+                    required: true
+                }
+            }
+        ]
+    ,
+});
+module.exports = Model('order', OrderSchema);

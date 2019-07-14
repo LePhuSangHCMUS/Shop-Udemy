@@ -13,11 +13,11 @@ exports.postAddProductController = function (req, res, next) {
     const description = req.body.description;
     const price = req.body.price;
     //create product
-    const product = new Product(userId, title, imageUrl, description, price);
+    const product = new Product({ userId, title, imageUrl, description, price });
     product.save().
         then(result => {
+            console.log(result);
             res.redirect('/admin/products');
-
         })
         .catch(err => console.log(err));
 
@@ -27,7 +27,7 @@ exports.postAddProductController = function (req, res, next) {
 exports.getEditProductController = function (req, res, next) {
     const productId = req.params.productId;
     //Lay tu middle ware khi dang nhap la ai
-    Product.findOneProduct(productId)
+    Product.findOne({ _id: productId })
         .then(productEdit => {
             res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true });
 
@@ -48,8 +48,8 @@ exports.postEditProductController = function (req, res, next) {
     //edit product
     //Bowi vi khi vao trang quan tri thi se hien thi chi nhung san pham cua nguoi dung do 
     //nen xoa sua san pham co id trung voi no la duoc
-    //Khong can suwr dung user lam gi ca
-    Product.upDateOne(productId, title, imageUrl, description, price)
+    //Khong can sua dung user lam gi ca
+    Product.updateOne({ _id: productId }, { title: title, imageUrl: imageUrl, description: description, price: price })
         .then(result => {
             res.redirect('/admin/products');
 
@@ -59,7 +59,8 @@ exports.postEditProductController = function (req, res, next) {
 //admin/product
 exports.getProductListController = function (req, res, next) {
     const user = req.user;
-    Product.fetchAllProductUser(user._id)
+    console.log(user)
+    Product.find({ userId: user._id })
         .then(products => {
             console.log(products)
             res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active' });
@@ -70,11 +71,19 @@ exports.deleteProductController = function (req, res, next) {
     const user = req.user;
     const productId = req.params.productId;
     //Xoa product 
-    Product.deleteOneProduct(productId)
+    Product.deleteOne({ _id: productId })
         .then(result => {
             //Xoa Luon Trong Cart
-            Cart.deleteProductFromCartUserIdAndProductId(user._id, productId).then(reuslt=>{
-                res.redirect('/admin/products')
-            })
-        });
+            try {
+                Cart.deleteOne({ userId: user._id, productId: new ObjectID(productCartId) }).then(result => {
+                    console.log("Delete Success");
+                    res.redirect('/shop/cart');
+
+                })
+            } catch (err) {
+                console.log(err);
+                console.log("Not delete");
+            }
+            res.redirect('/admin/products')
+        })
 }

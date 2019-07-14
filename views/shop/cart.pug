@@ -10,7 +10,7 @@ block content
                 li.card-product-item 
                     p.title #{productCart.title}  (#{productCart.quantity}) 
                     form.form-action(action="/shop/cart/delete", method="post")
-                        button.btn.btn-delete-cart(type='submit' value=productCart._id name='productCartId') Delete
+                        button.btn.btn-delete-cart(type='submit' value=productCart.productId name='productCartId') Delete
         form.form-action(action="/shop/orders", method="post")
              button.btn.btn-delete-cart(type='submit') Order Now !
     
