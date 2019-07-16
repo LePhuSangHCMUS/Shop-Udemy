@@ -1,0 +1,30 @@
+include ../layouts/main-layout.pug
+block head
+    link(rel="stylesheet", href="./stylesheets/login.css")
+block content
+    main
+
+        form.login-form(action="/signup" method='POST')
+            if(emailIsExist)
+                .alert-danger Email or Username is existed
+            .form-control
+                label(for="username") Username
+                input(type="username", name="username")
+            .form-control
+                label(for="email") E-Mail
+                input(type="email", name="email")
+            .form-control
+                label(for="password") Password
+                input(type="password", name="password")
+            .form-control
+                label(for="confirmPassword")  Confirm Password
+                input(type="password", name="confirmPassword")
+            button.btn.btn-submit(type="submit" name='_csrf' value=csrfToken) Signup
+
+    
+      
+
+          
+                
+             
+            

@@ -12,8 +12,10 @@ block content
                 .card-content
                     h2.product__price $#{product.price}
                     p.product__description #{product.description}
-                form.form-add-to-cart(action='/shop/cart', method="POST")
-                    button.btn.btn-add-to-cart(type='submit' value=product._id name='productId' ) Add to cart
+                    //-Neu chua dang nhap thi khong cho hien add to cart
+                    if isAuthenticated
+                        form.form-add-to-cart(action='/shop/cart', method="POST")
+                            button.btn.btn-add-to-cart(type='submit' value=product._id name='productId' ) Add to cart
   
                 
                                   

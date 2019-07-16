@@ -3,7 +3,8 @@ const Product = require('../models/products');
 const Cart = require('../models/cart');
 //Do Add and Edit Same Nen Dung Chung 1 Form
 exports.getAddProductController = function (req, res, next) {
-    res.render('admin/add-edit-product', { title: 'Add Product', activeAddProduct: 'active', isEditMode: false });
+    const isLoggedIn=req.session.isLoggedIn;
+    res.render('admin/add-edit-product', { title: 'Add Product', activeAddProduct: 'active', isEditMode: false,isAuthenticated:isLoggedIn });
 }
 
 exports.postAddProductController = function (req, res, next) {
@@ -26,10 +27,13 @@ exports.postAddProductController = function (req, res, next) {
 //admin/add-product/:producId  ---> GET
 exports.getEditProductController = function (req, res, next) {
     const productId = req.params.productId;
+    //Neu Da Dang nhap
+    const isLoggedIn=req.session.isLoggedIn;
+
     //Lay tu middle ware khi dang nhap la ai
     Product.findOne({ _id: productId })
         .then(productEdit => {
-            res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true });
+            res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true,isAuthenticated:isLoggedIn });
 
         })
         .catch(err => {
@@ -58,12 +62,15 @@ exports.postEditProductController = function (req, res, next) {
 }
 //admin/product
 exports.getProductListController = function (req, res, next) {
-    const user = req.user;
+    const user = req.session.user;
+    const userId = user._id;
+    const isLoggedIn=req.session.isLoggedIn;
+
     console.log(user)
     Product.find({ userId: user._id })
         .then(products => {
             console.log(products)
-            res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active' });
+            res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active',isAuthenticated:isLoggedIn });
 
         })
 }

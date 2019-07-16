@@ -7,23 +7,34 @@ html(lang="en")
          meta(http-equiv="X-UA-Compatible", content="ie=edge")
          title #{title}
          link(rel="icon" href="/images/shop.png")
-
          link(rel="stylesheet", href="/stylesheets/main.css")
          block head
      body
          header.main-header
              nav.main-header__nav 
-                 ul.main-header__item-list 
+               ul.main-header__item-list 
                      li.main-header__item
                         a(href='/shop',class=(typeof activeShop !=='undefined' ?activeShop:'')) Shop
                      li.main-header__item
                         a(href='/shop/products',class=(typeof activeProducts!=='undefined' ?activeProducts:'')) Products
+                     if isAuthenticated
+                        li.main-header__item
+                           a(href='/shop/cart',class=(typeof activeCart !=='undefined' ? activeCart:'')) Cart
+                        li.main-header__item
+                           a(href='/shop/orders',class=(typeof activeOrder !=='undefined' ? activeOrder:'')) Orders
+                        li.main-header__item
+                           a(href='/admin/add-product',class=(typeof activeAddProduct !=='undefined' ?activeAddProduct:'')) Add Product
+                        li.main-header__item
+                           a(href='/admin/products',class=(typeof activeAdminProducts !=='undefined' ?activeAdminProducts:'')) Admin Products
+               ul.main-header__item-list
+                  if !isAuthenticated
                      li.main-header__item
-                        a(href='/shop/cart',class=(typeof activeCart !=='undefined' ? activeCart:'')) Cart
+                        a(href="/login" class=(typeof activeLogin !=='undefined' ? activeLogin:'')) Login
                      li.main-header__item
-                        a(href='/shop/orders',class=(typeof activeOrder !=='undefined' ? activeOrder:'')) Orders
+                        a(href="/signup" class=(typeof activeSignup !=='undefined' ? activeSignup:'')) Signup
+                  else
                      li.main-header__item
-                        a(href='/admin/add-product',class=(typeof activeAddProduct !=='undefined' ?activeAddProduct:'')) Add Product
-                     li.main-header__item
-                        a(href='/admin/products',class=(typeof activeAdminProducts !=='undefined' ?activeAdminProducts:'')) Admin Products
+                        form.logout-form(action="/logout" method='POST')
+                           //-Phai chuyen them csrf len thi post request moi nhan
+                           button(type="submit" name='_csrf' value=csrfToken) Logout 
          block content

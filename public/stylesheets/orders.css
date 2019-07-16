@@ -1,15 +1,16 @@
-.item-order{
-    border: 2px solid rgb(224, 219, 219);
-    /* box-shadow: -9px -1px 19px 11px rgba(219,219,219,1); */
-    margin:1rem 2rem;
+.item-order {
+    border         : 2px solid rgb(224, 219, 219);
+    /* box-shadow  : -9px -1px 19px 11px rgba(219,219,219,1); */
+    margin         : 1rem 2rem;
     list-style-type: none;
-    padding: 1rem 1rem;;
+    padding        : 1rem 1rem ;
 
 }
-.item-product{
+
+.item-product {
     list-style-type: none;
-    margin:1rem 1rem;
-padding: 1rem 1rem;;
+    margin         : 1rem 1rem;
+    padding        : 1rem 1rem ;
     border: 2px solid rgba(2, 119, 113, 0.753);
 
 }

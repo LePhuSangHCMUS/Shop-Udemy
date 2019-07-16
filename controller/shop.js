@@ -7,9 +7,13 @@ const Order = require('../models/order');
 const ObjectID = require('mongodb').ObjectID;
 //Get Products All
 exports.getProductShop = function (req, res, next) {
-    const user = req.user;
-    console.log(user)
-    Product.find({ userId: user._id })
+    //Khong can lay san pham theo user vi phai lay het tat ca san pham
+    // const user = req.session.user;
+    const isLoggedIn=req.session.isLoggedIn;
+    // console.log(isLoggedIn)
+    // Product.find({ userId: user._id })
+    //Cai tien lay het tat ca san pham
+     Product.find()
     //Chọn ra nhung thuoc tinh ma minh nhan (- la loại bỏ _id) nhưng muon lay het
         // .select('title price imageUrl -_id')
         //Lay thong tin user luon dung populate
@@ -17,18 +21,17 @@ exports.getProductShop = function (req, res, next) {
         // .populate('userId name email')
         .then(products => {
             console.log(products)
-            res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active' });
+            res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active',isAuthenticated:isLoggedIn ,csrfToken:req.csrfToken()});
 
         })
 
 }
 exports.getProductListDeTail = function (req, res, next) {
-    const user = req.user;
-    console.log(user)
-    Product.find({ userId: user._id })
+    const isLoggedIn=req.session.isLoggedIn;
+    Product.find()
         .then(products => {
             console.log(products)
-            res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active' });
+            res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active',isAuthenticated:isLoggedIn ,csrfToken:req.csrfToken() });
 
         })
 
@@ -36,11 +39,12 @@ exports.getProductListDeTail = function (req, res, next) {
 //Get Product Detail
 exports.getProductDetail = function (req, res, next) {
     const productId = req.params.productId;
+    const isLoggedIn=req.session.isLoggedIn;
 
     Product.findOne(new ObjectID(productId))
         .then(product => {
             console.log(product)
-            res.render('./shop/product-detail', { product: product, title: product.title, activeProducts: 'active' });
+            res.render('./shop/product-detail', { product: product, title: product.title, activeProducts: 'active',isAuthenticated:isLoggedIn,csrfToken:req.csrfToken()  });
 
         });
 }
@@ -49,7 +53,8 @@ exports.getProductDetail = function (req, res, next) {
 //shop/cart--> POST
 //Them product vao cart
 exports.postCart = function (req, res, next) {
-    const userId = req.user._id;
+    const user = req.session.user;
+    const userId = user._id;
     const productId = req.body.productId;
     // const cart = new Cart(userId, productId);
     // Get product  the documents collection
@@ -100,7 +105,10 @@ exports.postCart = function (req, res, next) {
 //Giao dien cart
 ////shop/cart--> GET (navigation)
 exports.getCart = function (req, res, next) {
-    const userId = req.user._id;
+    const user = req.session.user;
+    const userId = user._id;
+    const isLoggedIn=req.session.isLoggedIn;
+
     try {
         Cart.find({ userId: userId }).then(carts => {
             // console.log(carts);
@@ -136,7 +144,7 @@ exports.getCart = function (req, res, next) {
 
                     })
                     console.log(prosCartMap)
-                    res.render('./shop/cart', { productsCart: prosCartMap, title: 'Cart', activeCart: 'active' });
+                    res.render('./shop/cart', { productsCart: prosCartMap, title: 'Cart', activeCart: 'active' ,isAuthenticated:isLoggedIn ,csrfToken:req.csrfToken()});
                 });
 
         })
@@ -146,7 +154,7 @@ exports.getCart = function (req, res, next) {
 }
 //Delete product from cart
 exports.deleteProductFromCart = function (req, res, next) {
-    const user = req.user;
+    const user = req.session.user;
     const productCartId = req.body.productCartId;
     try {
         Cart.deleteOne({ userId: user._id, productId: new ObjectID(productCartId) }).then(result => {
@@ -163,7 +171,7 @@ exports.deleteProductFromCart = function (req, res, next) {
 
 //------------------------------------------------------------
 exports.postOrders = function (req, res, next) {
-    const user = req.user;
+    const user = req.session.user;
     const userId = user._id;
     try {
         return Cart.find({ userId: userId })
@@ -220,13 +228,14 @@ exports.postOrders = function (req, res, next) {
 }
 
 exports.getOrders = function (req, res, next) {
-    var user = req.user;
+    var user = req.session.user;
+    const isLoggedIn=req.session.isLoggedIn;
 
     try {
         Order.find({ userId: user._id })
             .then(orders => {
                 console.log(orders)
-                res.render('./shop/orders', { orders: orders, title: 'Orders', activeCheckout: 'orders' });
+                res.render('./shop/orders', { orders: orders, title: 'Orders', activeOrder: 'active',isAuthenticated:isLoggedIn,csrfToken:req.csrfToken()  });
             })
     } catch (err) {
         console.log(err)

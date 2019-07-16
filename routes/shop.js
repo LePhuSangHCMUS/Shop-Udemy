@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var isAuth=require('../middleware/is-auth')
 
 //Controller Shop
  const shopController=require('../controller/shop')
@@ -15,13 +15,15 @@ router.get('/product-detail/:productId',shopController.getProductDetail );
 //Dùng cách khác nên không sài cách này
 //router.post('/cart/:productId',shopController.addToCart );
 //Them san pham vao cart
-router.post('/cart/delete',shopController.deleteProductFromCart);
-router.post('/cart',shopController.postCart );
+router.post('/cart/delete',isAuth,shopController.deleteProductFromCart);
+router.post('/cart',isAuth,shopController.postCart );
 //Request  ve giao dien cart
-router.get('/cart',shopController.getCart );
+//Truoc khi xem cart can phai dang nhap
+router.get('/cart',isAuth,shopController.getCart );
 //delete cart
-router.post('/orders',shopController.postOrders );
-router.get('/orders',shopController.getOrders );
+router.post('/orders',isAuth,shopController.postOrders );
+//truoc khi order phai dang nhap
+router.get('/orders',isAuth,shopController.getOrders );
 // router.get('/checkout',shopController.checkout );
 // router.get('/checkout',shopController.orders );
 

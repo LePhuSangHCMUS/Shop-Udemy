@@ -1,8 +1,15 @@
 
+const MONGODB_URI = 'mongodb+srv://PhuSang:Nu06081995@cluster0-qjak0.mongodb.net/Shop?retryWrites=true&w=majority';
+
 //Database 
 const mongooseConnect = require('./util/database');
-const ModelUser = require('./models/user');
+const User = require('./models/user');
 const ObjectID = require('mongodb').ObjectID;
+//=====================================SESSION====================================
+var session = require('express-session')
+//=====================STORE SESSION MONGOGDB
+var MongoDBStore = require('connect-mongodb-session')(session);
+
 //==================================================
 var createError = require('http-errors');
 var express = require('express');
@@ -17,25 +24,27 @@ var indexRouter = require('./routes/index');
 //------------
 var adminRouter = require("./routes/admin")
 var shopRouter = require("./routes/shop")
-
+var authRouter = require('./routes/auth')
+//===========APP===================================
 var app = express();
-
+//=======Chong Tan Cong CSRF(CSURF)
+var csurf = require('csurf');
+// setup route middlewares
+var csrfProtection = csurf({ cookie: true })
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 // app.set('views', path.join(__dirname, 'views','admin'));
 app.set('view engine', 'pug');
-
+//=======================================================
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(bodyParser.json());
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
-//Connect Database
+//middle ware csurf
+app.use(csrfProtection);
+//=======================================SESSION============================
+// Connect Database
 try {
   mongooseConnect()
     .then(result => {
@@ -48,29 +57,46 @@ try {
 } catch (err) {
   console.log(err)
 }
+//==============Init Store Session MongoDB=========================
+//Trong database se xuat hien collection sessions
+var store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
+// Initializing the Session Middleware
+app.use(session({
+  secret: 'my secret',
+  resave: false,
+  saveUninitialized: false,//luu gia tri cookie sau khi dong trinh duyet hay khong
+  store: store//Noi luu tru session
+})
+)
 //=============================================
 //Filter User
-
+//Co The Khong Can Vi Ta DUng Session het roi
 app.use((req, res, next) => {
   try {
-    ModelUser.findById(new ObjectID('5d26e39c1c9d440000b1d798'))
+    if (!req.session.user) {
+      return next();
+    }
+    User.findById(req.session.user._id)
       .then(user => {
-        console.log(user);
         req.user = user;
         next();
       })
+      .catch(err => console.log(err));
+
   } catch (err) {
     console.log(err);
 
   }
-
-
 
 })
 
 
 
 //Use router
+app.use('/', authRouter);
 app.use('/', indexRouter);
 //--------------------
 app.use('/admin', adminRouter);

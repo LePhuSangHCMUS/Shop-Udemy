@@ -16,10 +16,12 @@ block content
                     .card-action
                         //- Có thể dung cách này để gửi Id addToCart nhưng nen dung cách dưới để nó chung router add-to-cart đã tạo
                         //- form.form-delete(action=('/shop/add-to-cart/'+ product._id), method="POST")
-                        form.form-add-to-cart(action='/shop/cart', method="POST")
-                             button.btn.btn-add-to-cart(type='submit' value=product._id name='productId' ) Add to cart
                         a.link-product-detail(href=("/shop/product-detail/"+product._id))
                             button.btn.btn-detail Detail
+                        //-Neu chua dang nhap thi khong cho hien add to cart
+                        if isAuthenticated
+                            form.form-add-to-cart(action='/shop/cart', method="POST")
+                                button.btn.btn-add-to-cart(type='submit' value=product._id name='productId' ) Add to cart
                 
           
                 
