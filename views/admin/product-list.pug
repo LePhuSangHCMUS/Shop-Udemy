@@ -19,7 +19,7 @@ block content
                             //-Delete nên là là form dung post vì chỉ có quản trị mới có quyền delete sản phẩm
                             //-Và cần phải vào trang quản trị mới submit được
                         form.form-delete(action=('/admin/delete-product/'+ product._id), method="POST")
-                            button.btn.btn-delete(type='submit') Delete
+                            button.btn.btn-delete(type='submit' name='_csrf' value=csrfToken) Delete
                 
           
                 

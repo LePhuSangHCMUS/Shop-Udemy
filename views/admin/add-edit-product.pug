@@ -16,4 +16,6 @@ block content
             .form-control
                 label Price
                 input(type="number" name="price"  value=productEdit?productEdit.price:'' required step='0.01')
+                //-Csrf
+                input(type='hidden' name='_csrf' value=csrfToken)
                 button(type="submit" name="productId" value=productEdit?productEdit._id:'') #{isEditMode?'Update Product':'Add Product'} 

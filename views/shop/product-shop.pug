@@ -21,6 +21,7 @@ block content
                         //-Neu chua dang nhap thi khong cho hien add to cart
                         if isAuthenticated
                             form.form-add-to-cart(action='/shop/cart', method="POST")
+                                input(type="hidden" name='_csrf' value=csrfToken)
                                 button.btn.btn-add-to-cart(type='submit' value=product._id name='productId' ) Add to cart
                 
           

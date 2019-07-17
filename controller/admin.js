@@ -4,7 +4,7 @@ const Cart = require('../models/cart');
 //Do Add and Edit Same Nen Dung Chung 1 Form
 exports.getAddProductController = function (req, res, next) {
     const isLoggedIn=req.session.isLoggedIn;
-    res.render('admin/add-edit-product', { title: 'Add Product', activeAddProduct: 'active', isEditMode: false,isAuthenticated:isLoggedIn });
+    res.render('admin/add-edit-product', { title: 'Add Product', activeAddProduct: 'active', isEditMode: false,isAuthenticated:isLoggedIn,csrfToken:req.csrfToken() });
 }
 
 exports.postAddProductController = function (req, res, next) {
@@ -33,7 +33,7 @@ exports.getEditProductController = function (req, res, next) {
     //Lay tu middle ware khi dang nhap la ai
     Product.findOne({ _id: productId })
         .then(productEdit => {
-            res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true,isAuthenticated:isLoggedIn });
+            res.render('admin/add-edit-product', { productEdit: productEdit, title: 'Edit Product', activeAddProduct: '', isEditMode: true,isAuthenticated:isLoggedIn,csrfToken:req.csrfToken() });
 
         })
         .catch(err => {
@@ -70,7 +70,7 @@ exports.getProductListController = function (req, res, next) {
     Product.find({ userId: user._id })
         .then(products => {
             console.log(products)
-            res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active',isAuthenticated:isLoggedIn });
+            res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active',isAuthenticated:isLoggedIn,csrfToken:req.csrfToken() });
 
         })
 }
