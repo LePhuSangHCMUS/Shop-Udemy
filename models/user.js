@@ -13,6 +13,15 @@ const  UserSchema = new Schema({
     password:{
         type:String,
         required:true   
+    },
+    isVerify:{
+        type:Boolean,
+        required:true   
+    }
+    ,
+    codeVerify:{
+        type:String,
+        required:true 
     }
 
 });

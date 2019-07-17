@@ -1,0 +1,20 @@
+include ../layouts/main-layout.pug
+block head
+    link(rel="stylesheet", href="./stylesheets/login.css")
+block content
+    main
+        form.login-form(action="/enter-email-verify" method='POST')
+            .form-control
+                if emailIsnotExist
+                    .alert-danger email isn't  exist
+                label(for="email") Enter Email
+                input(type="email", name="email")
+                button.btn.btn-submit(type="submit" name="_csrf" value=csrfToken) Send
+
+    
+      
+
+          
+                
+             
+            

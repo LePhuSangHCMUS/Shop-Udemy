@@ -8,6 +8,9 @@ block content
                 .alert-danger Password is wrong !!!!
             if userNotExist
                 .alert-danger User isn't Exist !!!!
+            if verify
+                .alert-danger Email has not been verified !!!!!
+                a.btn.btn-verify(href='/enter-email-verify') Click verify
             .form-control
                 label(for="email") E-Mail
                 input(type="email", name="email")

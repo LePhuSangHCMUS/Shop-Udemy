@@ -1,0 +1,21 @@
+include ../layouts/main-layout.pug
+block head
+    link(rel="stylesheet", href="./stylesheets/login.css")
+block content
+    main
+        form.login-form(action="/verify" method='POST')
+            .form-control
+                if codeWrong
+                    .alert-danger Code is wrong !!!!
+                label(for="code") Enter code
+                input(type="password", name="code")
+                input(type='hidden' name ='userId' value= userId)
+                button.btn.btn-submit(type="submit" name="_csrf" value=csrfToken) Verify
+
+    
+      
+
+          
+                
+             
+            

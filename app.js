@@ -1,5 +1,7 @@
 
 const MONGODB_URI = 'mongodb+srv://PhuSang:Nu06081995@cluster0-qjak0.mongodb.net/Shop?retryWrites=true&w=majority';
+///BIEN MOI TRUONG
+require('dotenv').config()
 
 //Database 
 const mongooseConnect = require('./util/database');
