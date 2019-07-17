@@ -5,6 +5,8 @@ block content
     main
         form.login-form(action="/enter-email-verify" method='POST')
             .form-control
+                if isVerify
+                    .alert-danger Email verified !!!!
                 if emailIsnotExist
                     .alert-danger email isn't  exist
                 label(for="email") Enter Email

@@ -20,7 +20,6 @@ exports.getProductShop = function (req, res, next) {
         // .populate('userId')
         // .populate('userId name email')
         .then(products => {
-            console.log(products)
             res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active',isAuthenticated:isLoggedIn ,csrfToken:req.csrfToken()});
 
         })
@@ -30,7 +29,6 @@ exports.getProductListDeTail = function (req, res, next) {
     const isLoggedIn=req.session.isLoggedIn;
     Product.find()
         .then(products => {
-            console.log(products)
             res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active',isAuthenticated:isLoggedIn ,csrfToken:req.csrfToken() });
 
         })
@@ -43,7 +41,6 @@ exports.getProductDetail = function (req, res, next) {
 
     Product.findOne(new ObjectID(productId))
         .then(product => {
-            console.log(product)
             res.render('./shop/product-detail', { product: product, title: product.title, activeProducts: 'active',isAuthenticated:isLoggedIn,csrfToken:req.csrfToken()  });
 
         });
@@ -62,12 +59,10 @@ exports.postCart = function (req, res, next) {
     Cart.findOne({ productId: new ObjectID(productId), userId: userId })
         .then(cart => {
             //Neu Tim san pham khong ton tai trong cart thi them moi
-            console.log(cart)
             if (!cart) {
                 try {
                     const quantity = 1;
                     const newCartItem = new Cart({ userId, productId, quantity });
-                    console.log(newCartItem);
                     //Them moi san pham
                     newCartItem.save()
                         .then(result => {
@@ -205,7 +200,6 @@ exports.postOrders = function (req, res, next) {
 
 
                         })
-                        console.log(prosCartMap);
                         //create new order
                         const order = new Order({ userId, productsCart: prosCartMap });
                         order.save()
@@ -234,7 +228,6 @@ exports.getOrders = function (req, res, next) {
     try {
         Order.find({ userId: user._id })
             .then(orders => {
-                console.log(orders)
                 res.render('./shop/orders', { orders: orders, title: 'Orders', activeOrder: 'active',isAuthenticated:isLoggedIn,csrfToken:req.csrfToken()  });
             })
     } catch (err) {

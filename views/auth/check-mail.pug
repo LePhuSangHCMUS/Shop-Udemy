@@ -1,0 +1,17 @@
+include ../layouts/main-layout.pug
+block head
+    link(rel="stylesheet", href="../stylesheets/login.css")
+block content
+    main
+        if resetPassword
+            .alert-success The mail has been sent, please check the mailbox
+        if resetTokenExpiration
+            .alert-danger-email-expired Email Expired
+
+    
+      
+
+          
+                
+             
+            

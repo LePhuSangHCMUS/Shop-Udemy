@@ -17,7 +17,6 @@ exports.postAddProductController = function (req, res, next) {
     const product = new Product({ userId, title, imageUrl, description, price });
     product.save().
         then(result => {
-            console.log(result);
             res.redirect('/admin/products');
         })
         .catch(err => console.log(err));
@@ -69,7 +68,6 @@ exports.getProductListController = function (req, res, next) {
     console.log(user)
     Product.find({ userId: user._id })
         .then(products => {
-            console.log(products)
             res.render('admin/product-list', { products: products, title: 'Admin Product', activeAdminProducts: 'active',isAuthenticated:isLoggedIn,csrfToken:req.csrfToken() });
 
         })

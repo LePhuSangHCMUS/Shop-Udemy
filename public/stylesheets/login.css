@@ -63,3 +63,22 @@ button:hover {
     margin-bottom:1rem; 
     background-color: rgba(243, 71, 114, 0.342);
 }
+.reset-password{
+    display: block;
+    margin-top:1rem; 
+}
+.alert-success{
+    border          : 2px solid rgb(0, 255, 64);
+    padding         : 1rem;
+    margin-bottom:1rem; 
+    text-align: center;
+    background-color: rgba(57, 241, 50, 0.377);
+}
+.alert-danger-email-expired{
+    border          : 2px solid rgb(255, 0, 140);
+    padding         : 1rem;
+    margin-bottom:1rem; 
+    text-align: center;
+
+    background-color: rgba(243, 71, 114, 0.342);
+}

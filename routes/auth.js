@@ -15,6 +15,11 @@ router.post('/verify',authController.postVerify);
 //Nhap mail verify
 router.get('/enter-email-verify',authController.getEnterMailVerify);
 router.post('/enter-email-verify',authController.postEnterMailVerify);
+//Reset pssword
+router.get('/email-reset-password',authController.getEmailResetPassword);
+router.post('/email-reset-password',authController.postEmailResetPassword);
+router.get('/new-password/:resetToken',authController.getNewPassword);
+router.post('/new-password',authController.postNewPassword);
 
 
 module.exports = router;

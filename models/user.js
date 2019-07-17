@@ -22,7 +22,12 @@ const  UserSchema = new Schema({
     codeVerify:{
         type:String,
         required:true 
-    }
+    },
+    codeVerifyExpiretion:Date,
+    resetToken: String,
+    resetTokenExpiration:Date
+
+
 
 });
 
