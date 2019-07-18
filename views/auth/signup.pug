@@ -4,18 +4,21 @@ block head
 block content
     main
 
-        form.login-form(action="/signup" method='POST')
+        form.login-form(action="/signup" method='POST' novalidate)
             if(emailIsExist)
-                .alert-danger Email or Username is existed
+                .alert-danger Email or Username exists already,please pick a different one
+            if errMessage.length > 0
+                each err in errMessage
+                        .alert-danger #{err.msg}
             .form-control
                 label(for="username") Username
-                input(type="username", name="username")
+                input(type="username", name="username" value=username)
             .form-control
                 label(for="email") E-Mail
-                input(type="email", name="email")
+                input(type="email", name="email" value=email )
             .form-control
                 label(for="password") Password
-                input(type="password", name="password")
+                input(type="password", name="password" )
             .form-control
                 label(for="confirmPassword")  Confirm Password
                 input(type="password", name="confirmPassword")

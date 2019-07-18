@@ -11,9 +11,12 @@ block content
             if verify
                 .alert-danger Email has not been verified !!!!!
                 a.btn.btn-verify(href='/enter-email-verify') Click verify
+            if errMessage.length > 0
+                each err in errMessage
+                        .alert-danger #{err.msg}
             .form-control
                 label(for="email") E-Mail
-                input(type="email", name="email")
+                input(type="email", name="email" value=email)
             .form-control
                 label(for="password") Password
                 input(type="password", name="password")

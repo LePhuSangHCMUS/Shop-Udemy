@@ -5,20 +5,27 @@ const bcryptjs = require("bcryptjs");
 var srs = require('secure-random-string');
 //Send mailer signup success
 const sgMail = require('@sendgrid/mail');
+//Validation 
+const { check, validationResult } = require('express-validator');
 
 exports.getLogin = (req, res, next) => {
   if (req.session.isLoggedIn) {
     return res.redirect('/shop');
   }
-  res.render('./auth/login', { title: 'LOGIN', activeLogin: 'active', isAuthenticated: false, csrfToken: req.csrfToken() });
-  console.log(req.session)
-
+  res.render('./auth/login', {
+    title: 'LOGIN',
+    activeLogin: 'active',
+    isAuthenticated: false,
+    csrfToken: req.csrfToken(),
+    errMessage: []
+  });
 }
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const errors = validationResult(req);
+
   //Dau hieu la ban da dang nhap thanh cong
-  console.log(email, password);
   // res.cookie('remember', '1', { expires: new Date(Date.now() + 900000), httpOnly: true });
   User.findOne({ email: email })
     .then(user => {
@@ -38,11 +45,11 @@ exports.postLogin = (req, res, next) => {
                 })
               }
               else {
-                res.render('./auth/login', { title: 'LOGIN', activeSignIn: 'active', csrfToken: req.csrfToken(), verify: true })
+                res.render('./auth/login', { title: 'LOGIN', activeSignIn: 'active', csrfToken: req.csrfToken(), verify: true ,errMessage:errors.array()})
               }
             }
             else {
-              res.render('./auth/login', { title: 'LOGIN', activeSignIn: 'active', isAuthenticated: false, passwordWrong: true, csrfToken: req.csrfToken() })
+              res.render('./auth/login', { title: 'LOGIN', activeSignIn: 'active', isAuthenticated: false, passwordWrong: true,errMessage:errors.array(), csrfToken: req.csrfToken() })
 
             }
           })
@@ -50,7 +57,7 @@ exports.postLogin = (req, res, next) => {
 
       }
       else {
-        res.render('./auth/login', { title: 'LOGIN', activeSignup: 'active', isAuthenticated: false, userNotExist: true, csrfToken: req.csrfToken() })
+        res.render('./auth/login', { title: 'LOGIN', activeSignup: 'active', isAuthenticated: false, userNotExist: true, csrfToken: req.csrfToken(),errMessage:errors.array() })
 
       }
 
@@ -69,29 +76,71 @@ exports.postLogout = (req, res, next) => {
 }
 //======================SIGNUP=================
 exports.getSignup = (req, res, next) => {
-  res.render('./auth/signup', { title: 'SIGNUP', activeSignup: 'active', isAuthenticated: false, csrfToken: req.csrfToken() })
+  res.render('./auth/signup',
+    {
+      title: 'SIGNUP',
+      activeSignup: 'active',
+      isAuthenticated: false,
+      csrfToken: req.csrfToken(),
+      errMessage: []
+    })
 }
 exports.postSignup = (req, res, next) => {
-
   //Lay email pass va confim pass
   const email = req.body.email;
   const username = req.body.username;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  //Validation email password
+  const errors = validationResult(req);
+  console.log('err: ', errors.array())
+  if (!errors.isEmpty()) {
+    return res.status(422)
+      .render('./auth/signup',
+        {
+          title: 'SIGNUP',
+          activeSignup: 'active',
+          isAuthenticated: false,
+          errMessage: errors.array(),
+          csrfToken: req.csrfToken(),
+          email: email,
+          username: username
+        });
+  }
+
+
+
+
 
   //Kiem tra xem email da dang ki chua
   User.findOne({ $or: [{ email: email }, { username: username }] })
     .then(user => {
       if (user) {
-        console.log(user);
-        res.render('./auth/signup', { title: 'SIGNUP', activeSignup: 'active', isAuthenticated: false, emailIsExist: true, csrfToken: req.csrfToken() })
+        res.render('./auth/signup',
+          {
+            title: 'SIGNUP',
+            activeSignup: 'active',
+            isAuthenticated: false,
+            emailIsExist: true,
+            csrfToken: req.csrfToken(),
+            errMessage: errors.array(),
+            email: email,
+            username: username
+          })
       }
       else {
         return bcryptjs.hash(password, 12)
           .then(hashedPassword => {
             const codeVerify = bcryptjs.hashSync('lephusang', 12);
             const codeVerifyExpiretion = Date.now() + 3600000//minh ban mili giay = 1h
-            user = new User({ email: email, username: username, password: hashedPassword, isVerify: false, codeVerify: codeVerify, resetToken: resetToken, codeVerifyExpiretion: codeVerifyExpiretion });
+            user = new User({
+              email: email,
+              username: username,
+              password: hashedPassword,
+              isVerify: false,
+              codeVerify: codeVerify,
+              codeVerifyExpiretion: codeVerifyExpiretion
+            });
             user.save()
               .then(result => {
                 //Luu thanh cong tai khoan
