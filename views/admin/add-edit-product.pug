@@ -3,13 +3,16 @@ block  head
     link(rel="stylesheet", href="/stylesheets/form-add-product.css")
 block content
     main
-        form.product-form(action=isEditMode?'/admin/edit-product':'/admin/add-product' , method='POST')
+        //-Neu dung _crsf thi dung them quary _csrf dang sau action
+        form.product-form(enctype='multipart/form-data', method='POST',action=isEditMode?`/admin/edit-product`:`/admin/add-product` )
+            if fileFilter
+                .alert-danger Please choose file is image!!!!!!
             .form-control
                 label Title
                 input(type="text" name="title" value=productEdit?productEdit.title:'' required)
             .form-control
-                label Url Image
-                input(type="text" name="imageUrl" value=productEdit?productEdit.imageUrl:''   required)
+                label ProductImage
+                input(type="file" name="productImage" accept="image/*" )
             .form-control
                 label Description
                 textarea(name="description" rows="5" cols="30"  required) #{productEdit?productEdit.description:''}
@@ -18,4 +21,4 @@ block content
                 input(type="number" name="price"  value=productEdit?productEdit.price:'' required step='0.01')
                 //-Csrf
                 input(type='hidden' name='_csrf' value=csrfToken)
-                button(type="submit" name="productId" value=productEdit?productEdit._id:'') #{isEditMode?'Update Product':'Add Product'} 
+            button(type="submit" name="productId" value=productEdit?productEdit._id:'') #{isEditMode?'Update Product':'Add Product'} 

@@ -13,12 +13,13 @@ var session = require('express-session')
 var MongoDBStore = require('connect-mongodb-session')(session);
 
 //==================================================
+
+//==================================
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var bodyParser = require('body-parser');
 
 //Require Router
 var indexRouter = require('./routes/index');
@@ -29,6 +30,32 @@ var shopRouter = require("./routes/shop")
 var authRouter = require('./routes/auth')
 //===========APP===================================
 var app = express();
+// Multer upload file
+var multer = require('multer');
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    //Phai tao truoc forder uploads
+    cb(null, './public/uploads')
+  },
+  filename: function (req, file, cb) {
+    const originalname = file.originalname.split('.')
+    cb(null, originalname[0] + '-' + Date.now() + `.${originalname[1]}`)
+  }
+})
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' ||file.mimetype === 'image/jpg' ||file.mimetype === 'image/jpeg'||file.mimetype === 'image/gif' ){
+    cb(null,true)
+  }
+  else{
+    cb(null,false);
+  }
+}
+  
+var upload = multer({ storage: storage, fileFilter: fileFilter })
+
+// var multer  = require('multer')
+// var upload = multer({ dest: 'uploads/' })
+
 //=======Chong Tan Cong CSRF(CSURF)
 var csurf = require('csurf');
 // setup route middlewares
@@ -37,6 +64,7 @@ var csrfProtection = csurf({ cookie: true })
 app.set('views', path.join(__dirname, 'views'));
 // app.set('views', path.join(__dirname, 'views','admin'));
 app.set('view engine', 'pug');
+app.use(upload.single('productImage'));
 //=======================================================
 app.use(logger('dev'));
 app.use(express.json());
@@ -45,6 +73,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 //middle ware csurf
 app.use(csrfProtection);
+//middle ware mullter
 //=======================================SESSION============================
 // Connect Database
 try {

@@ -14,6 +14,9 @@ block content
                         ul.list-products
                             each product in order.productsCart
                                 li.item-product - #{product.title}      ( #{product.quantity} ) 
+                        a(href=`/shop/orders/${order._id}`) Views Invoices
+
+
                 
           
                 

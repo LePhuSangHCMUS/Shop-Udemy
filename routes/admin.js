@@ -5,11 +5,12 @@ var isAuth=require('../middleware/is-auth')
 const adminController=require('../controller/admin')
 
 /* GET home page. */
-router.get('/add-product',isAuth,adminController.getAddProductController);
+router.get('/add-product',isAuth,isAuth,adminController.getAddProductController);
 //Post Data
-router.post('/add-product',adminController.postAddProductController);
+//Add middleware upload file multer
+router.post('/add-product',isAuth,adminController.postAddProductController);
 //Show product in Admin
-router.get('/products',adminController.getProductListController);
+router.get('/products',isAuth,adminController.getProductListController);
 //Edit Get Product
 router.get('/edit-product/:productId',isAuth,adminController.getEditProductController);
 /////Edit Get Product

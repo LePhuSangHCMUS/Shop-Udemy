@@ -22,8 +22,12 @@ router.post('/cart',isAuth,shopController.postCart );
 router.get('/cart',isAuth,shopController.getCart );
 //delete cart
 router.post('/orders',isAuth,shopController.postOrders );
+
+
 //truoc khi order phai dang nhap
 router.get('/orders',isAuth,shopController.getOrders );
+//Download hoa don
+router.get('/orders/:orderId',isAuth,shopController.getInvoice );
 // router.get('/checkout',shopController.checkout );
 // router.get('/checkout',shopController.orders );
 
