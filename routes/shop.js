@@ -8,7 +8,7 @@ var isAuth=require('../middleware/is-auth')
 /* GET home page. */
 router.get('/',shopController.getProductShop );
 //Get products all
-router.get('/products',shopController.getProductListDeTail );
+router.get('/products',shopController.getProductShop );
 
 //Get product detal
 router.get('/product-detail/:productId',shopController.getProductDetail );
@@ -20,16 +20,18 @@ router.post('/cart',isAuth,shopController.postCart );
 //Request  ve giao dien cart
 //Truoc khi xem cart can phai dang nhap
 router.get('/cart',isAuth,shopController.getCart );
-//delete cart
-router.post('/orders',isAuth,shopController.postOrders );
+
+//Khong can postOrders nua them orders chung voi button checkout trong cart luon
+// router.post('/orders',isAuth,shopController.postOrders );
 
 
 //truoc khi order phai dang nhap
 router.get('/orders',isAuth,shopController.getOrders );
 //Download hoa don
 router.get('/orders/:orderId',isAuth,shopController.getInvoice );
-// router.get('/checkout',shopController.checkout );
-// router.get('/checkout',shopController.orders );
+router.get('/checkout',isAuth,shopController.getCheckout );
+//tuong duong voi post check out
+router.post('/create-order',isAuth,shopController.postCheckout );
 
 
 

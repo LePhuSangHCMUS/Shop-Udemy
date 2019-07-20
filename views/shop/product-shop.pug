@@ -1,6 +1,6 @@
 include ../layouts/main-layout.pug
 block head
-    link(rel="stylesheet", href="/stylesheets/shop-product-list-detail.css")
+    link(rel="stylesheet", href="/stylesheets/shop-product.css")
 block content
     main
         .grid
@@ -24,7 +24,27 @@ block content
                                 input(type="hidden" name='_csrf' value=csrfToken)
                                 button.btn.btn-add-to-cart(type='submit' value=product._id name='productId' ) Add to cart
                 
-          
+        section.pagination
+            ul.list-item
+                li.item-page(id='previous')
+                    a(href="/shop?page=1") Previous
+
+                li.item-page(id='1')
+                    a(href="/shop?page=1")  1
+                li.item-page(id='2')
+                    a(href="/shop?page=2")  2
+                li.item-page(id='3')
+                    a(href="/shop?page=3")  3
+                li.item-page .......
+                li.item-page(id='quantity-page-2' )
+                    a(href=`/shop?page=${quantityPage-2}`)  #{quantityPage-2}
+                li.item-page(id='quantity-page-1')  
+                    a(href=`/shop?page=${quantityPage-1}`)  #{quantityPage-1}
+                li.item-page(id='quantity-page')
+                    a(href=`/shop?page=${quantityPage}`) #{quantityPage}
+                li.item-page(id='next')
+                    a(href="/shop?page=12")  Next
+    scripts(src="/javascripts/pagination.js")
                 
              
             

@@ -5,5 +5,4 @@ const indexController=require('../controller/index')
 
 /* GET home page. */
 router.get('/',indexController.getProductList );
-
 module.exports = router;

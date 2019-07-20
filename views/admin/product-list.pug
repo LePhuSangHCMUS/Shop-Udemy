@@ -1,5 +1,34 @@
+//- include ../layouts/main-layout.pug
+//- block head
+//-     link(rel="stylesheet", href="/stylesheets/shop-product.css")
+//-     link(rel="stylesheet", href="/stylesheets/admin-product-list.css")
+//- block content
+//-     main
+//-         .grid
+//-             each product in products
+//-                 article.card-product-item 
+//-                     header.card-header
+//-                         h1.product__title #{product.title}
+//-                         .card-image
+//-                              img(src=product.imageUrl, alt=product.title, srcset="")  
+//-                     .card-content
+//-                         h2.product__price $#{product.price}
+//-                         p.product__description #{product.description}
+//-                     .card-action
+//-                         a.link-edit(href=('/admin/edit-product/'+ product._id))
+//-                             button.btn.btn-edit Edit
+//-                             //-Delete nên là là form dung post vì chỉ có quản trị mới có quyền delete sản phẩm
+//-                             //-Và cần phải vào trang quản trị mới submit được
+//-                         form.form-delete(action=('/admin/delete-product/'+ product._id), method="POST")
+//-                             button.btn.btn-delete(type='submit' name='_csrf' value=csrfToken) Delete
+                
+          
+//-SINGLE PAGE RENDER CLIENT SIDE - ASYNC REQUEST
+
+
 include ../layouts/main-layout.pug
 block head
+    link(rel="stylesheet", href="/stylesheets/shop-product.css")
     link(rel="stylesheet", href="/stylesheets/admin-product-list.css")
 block content
     main
@@ -16,12 +45,9 @@ block content
                     .card-action
                         a.link-edit(href=('/admin/edit-product/'+ product._id))
                             button.btn.btn-edit Edit
-                            //-Delete nên là là form dung post vì chỉ có quản trị mới có quyền delete sản phẩm
-                            //-Và cần phải vào trang quản trị mới submit được
-                        form.form-delete(action=('/admin/delete-product/'+ product._id), method="POST")
-                            button.btn.btn-delete(type='submit' name='_csrf' value=csrfToken) Delete
-                
-          
-                
-             
-            
+                            //-Chuyen this hoac chuyen event roi lay event.target
+                        input(type="hidden" name='_csrf' value=csrfToken)
+                        input(type="hidden" name='productId' value=product._id)
+                        button.btn.btn-delete(type='button' onclick='deleteProduct(this)' ) Delete 
+    //- THem sử ly async request cho admin 
+    script(src="/javascripts/admin.js")

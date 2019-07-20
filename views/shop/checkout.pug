@@ -1,0 +1,28 @@
+include ../layouts/main-layout.pug
+block head
+    link(rel="stylesheet", href="/stylesheets/checkout.css")
+block content
+    h1 CHECKOUT
+    main.checkout
+        ul.product-list
+             each productCart in productsCart
+                li.card-product-item 
+                    p.title #{productCart.title} 
+                    p.quantity Quantity: #{productCart.quantity}
+        p.price-total Total : $#{priceTotal}
+        //-Dung Stripe ban cu ban moi cua ho tro viet nam nen chua la duoc
+        form(action=`/shop/create-order` method='POST')
+            input(type="hidden" name='_csrf' value=csrfToken)
+            script(
+                src='https://checkout.stripe.com/checkout.js' 
+                class='stripe-button'
+                data-key='pk_test_LpCwVorqEE7O2m2BANLbVU0S00iEujME09'
+                data-name='Your Order'
+                data-amount=`${priceTotal*100}`
+                data-description='All the item you ordered'
+                data-image="https://stripe.com/img/documentation/checkout/marketplace.png" 
+                data-locale="auto"
+                data-currency="usd"
+                )
+
+ 

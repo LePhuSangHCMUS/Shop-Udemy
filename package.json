@@ -37,6 +37,7 @@
     "secure-random-string": "^1.1.2",
     "sequelize": "^5.9.4",
     "sqlstring": "^2.3.1",
+    "stripe": "^7.4.0",
     "uuid": "^3.3.2"
   }
 }

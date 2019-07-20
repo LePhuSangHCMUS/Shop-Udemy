@@ -5,6 +5,9 @@ const Cart = require('../models/cart');
 const User = require('../models/user');
 const Order = require('../models/order');
 const ObjectID = require('mongodb').ObjectID;
+//Thanh toan dung stripe
+//kem theo sau la keyAPI private --phair la private
+const stripe = require('stripe')('sk_test_0REpBVLhWSVzQtWrmMDW7wwG00CdsSE9ZA');
 //Doc file de duir dowload qua header
 const fs = require('fs');
 const path = require('path')
@@ -26,16 +29,28 @@ exports.getProductShop = function (req, res, next) {
         // .populate('userId')
         // .populate('userId name email')
         .then(products => {
-            res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active', isAuthenticated: isLoggedIn, csrfToken: req.csrfToken() });
-
-        })
-
-}
-exports.getProductListDeTail = function (req, res, next) {
-    const isLoggedIn = req.session.isLoggedIn;
-    Product.find()
-        .then(products => {
-            res.render('./shop/product-shop', { products: products, title: 'SHOP', activeShop: 'active', isAuthenticated: isLoggedIn, csrfToken: req.csrfToken() });
+            //Paginaiton
+            //KHong Co Thi Render Hets
+            let productsPaginaton = [];
+            let quantityPage = 0;
+            const quantityProductPercentPage = 6;
+            if (!req.query.page) {
+                productsPaginaton = products.slice(quantityProductPercentPage - 6, quantityProductPercentPage);
+            }
+            else {
+                quantityPage = Math.floor(products.length / quantityProductPercentPage)
+                const page = req.query.page;
+                productsPaginaton = products.slice(page * quantityProductPercentPage - 6, page * quantityProductPercentPage)
+            }
+            res.render('./shop/product-shop',
+                {
+                    products: productsPaginaton,
+                    title: 'SHOP',
+                    activeShop: 'active',
+                    isAuthenticated: isLoggedIn,
+                    csrfToken: req.csrfToken(),
+                    quantityPage: quantityPage
+                });
 
         })
 
@@ -47,7 +62,13 @@ exports.getProductDetail = function (req, res, next) {
 
     Product.findOne(new ObjectID(productId))
         .then(product => {
-            res.render('./shop/product-detail', { product: product, title: product.title, activeProducts: 'active', isAuthenticated: isLoggedIn, csrfToken: req.csrfToken() });
+            res.render('./shop/product-detail', {
+                product: product,
+                title: product.title,
+                activeProducts: 'active',
+                isAuthenticated: isLoggedIn,
+                csrfToken: req.csrfToken()
+            });
 
         });
 }
@@ -171,61 +192,63 @@ exports.deleteProductFromCart = function (req, res, next) {
 }
 
 //------------------------------------------------------------
-exports.postOrders = function (req, res, next) {
-    const user = req.session.user;
-    const userId = user._id;
-    try {
-        return Cart.find({ userId: userId })
-            .then(carts => {
-                const productIds = carts.map(cart => {
-                    return cart.productId;
-                })
-                ///Tim nhieu product trong cart
-                Product.find(
-                    {
-                        _id: {
-                            $in: productIds
-                        }
-                    })
-                    .then(productsCart => {
-                        // console.log(productsCart)
-                        const prosCartMap = productsCart.map(product => {
-                            ///find la method cu mang
-                            return {
-                                productId: product._id,
-                                title: product.title,
-                                imageUrl: product.imageUrl,
-                                description: product.description,
-                                price: product.price,
-                                //Tim quantity ung vowi productId trong card
-                                quantity: carts.find(cart => {
-                                    //Do la doi tuong ne khong so sanh === duco nen chuyen ve string
-                                    return cart.productId.toString() === product._id.toString();
-                                }).quantity
-                            }
+//Checkout roi thi them order vaof orders luon dungf router nay vi khi chua co check out
+//=====================================================================================
+// exports.postOrders = function (req, res, next) {
+//     const user = req.session.user;
+//     const userId = user._id;
+//     try {
+//         return Cart.find({ userId: userId })
+//             .then(carts => {
+//                 const productIds = carts.map(cart => {
+//                     return cart.productId;
+//                 })
+//                 ///Tim nhieu product trong cart
+//                 Product.find(
+//                     {
+//                         _id: {
+//                             $in: productIds
+//                         }
+//                     })
+//                     .then(productsCart => {
+//                         // console.log(productsCart)
+//                         const prosCartMap = productsCart.map(product => {
+//                             ///find la method cu mang
+//                             return {
+//                                 productId: product._id,
+//                                 title: product.title,
+//                                 imageUrl: product.imageUrl,
+//                                 description: product.description,
+//                                 price: product.price,
+//                                 //Tim quantity ung vowi productId trong card
+//                                 quantity: carts.find(cart => {
+//                                     //Do la doi tuong ne khong so sanh === duco nen chuyen ve string
+//                                     return cart.productId.toString() === product._id.toString();
+//                                 }).quantity
+//                             }
 
 
-                        })
-                        //create new order
-                        const order = new Order({ userId, productsCart: prosCartMap });
-                        order.save()
-                            .then(result => {
-                                console.log("Insert 1 new Order");
-                                //Sau Khi Order Thanh Cong Thì Clear Cart
-                                Cart.deleteMany({ userId: userId }).then(result => {
-                                    console.log("Clear Cart success");
-                                    res.redirect('/shop/cart');
-                                })
+//                         })
+//                         //create new order
+//                         const order = new Order({ userId, productsCart: prosCartMap });
+//                         order.save()
+//                             .then(result => {
+//                                 console.log("Insert 1 new Order");
+//                                 //Sau Khi Order Thanh Cong Thì Clear Cart
+//                                 Cart.deleteMany({ userId: userId }).then(result => {
+//                                     console.log("Clear Cart success");
+//                                     res.redirect('/shop/cart');
+//                                 })
 
-                            });
-                    });
+//                             });
+//                     });
 
-            })
-    } catch (err) {
-        console.log(err);
-    }
+//             })
+//     } catch (err) {
+//         console.log(err);
+//     }
 
-}
+// }
 
 exports.getOrders = function (req, res, next) {
     var user = req.session.user;
@@ -324,7 +347,151 @@ exports.getInvoice = (req, res, next) => {
 }
 
 
-// exports.checkout = function (req, res, next) {
-//     const products = Product.fetchAll();
-//     res.render('./shop/checkout', { products: products, title: 'Checkout', activeCheckout: 'active' });
-// }
+exports.getCheckout = function (req, res, next) {
+    const user = req.session.user;
+    const isLoggedIn = req.session.isLoggedIn;
+    const userId = user._id;
+    try {
+        return Cart.find({ userId: userId })
+            .then(carts => {
+                if (carts.length > 0) {
+                    const productIds = carts.map(cart => {
+                        return cart.productId;
+                    })
+                    ///Tim nhieu product trong cart
+                    Product.find(
+                        {
+                            _id: {
+                                $in: productIds
+                            }
+                        })
+                        .then(productsCart => {
+                            // console.log(productsCart)
+                            const prosCartMap = productsCart.map(product => {
+                                ///find la method cu mang
+                                return {
+                                    productId: product._id,
+                                    title: product.title,
+                                    imageUrl: product.imageUrl,
+                                    description: product.description,
+                                    price: product.price,
+                                    //Tim quantity ung vowi productId trong card
+                                    quantity: carts.find(cart => {
+                                        //Do la doi tuong ne khong so sanh === duco nen chuyen ve string
+                                        return cart.productId.toString() === product._id.toString();
+                                    }).quantity
+                                }
+
+
+                            })
+                            //create new order
+                            // const order = new Order({ userId, productsCart: prosCartMap });
+
+                            const priceTotal = prosCartMap.reduce((total, product) => {
+                                console.log(total, product.quantity, product.price)
+                                return total + product.quantity * product.price;
+                            }, 0)
+                            res.render('./shop/checkout', {
+                                title: 'Checkout',
+                                isAuthenticated: isLoggedIn,
+                                activeCheckout: 'active',
+                                productsCart: prosCartMap,
+                                priceTotal: priceTotal,
+                                cartId: carts._id,
+                                csrfToken: req.csrfToken()
+                            });
+                        });
+                }
+                else {
+                    res.redirect('/shop/cart');
+                }
+
+
+            })
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+exports.postCheckout = function (req, res, next) {
+    //THANH TOAN KHI NAO THANH CONG THI TAO ORDER
+    const user = req.session.user;
+    const isLoggedIn = req.session.isLoggedIn;
+    const userId = user._id;
+    //toekn is create using checkout 
+    //get the payment token ID submit by the form
+    //Stripe token tu sinh ra
+    const token = req.body.stripeToken;//Using Express
+    try {
+        return Cart.find({ userId: userId })
+            .then(carts => {
+                if (carts.length > 0) {
+                    const productIds = carts.map(cart => {
+                        return cart.productId;
+                    })
+                    ///Tim nhieu product trong cart
+                    Product.find(
+                        {
+                            _id: {
+                                $in: productIds
+                            }
+                        })
+                        .then(productsCart => {
+                            // console.log(productsCart)
+                            const prosCartMap = productsCart.map(product => {
+                                ///find la method cu mang
+                                return {
+                                    productId: product._id,
+                                    title: product.title,
+                                    imageUrl: product.imageUrl,
+                                    description: product.description,
+                                    price: product.price,
+                                    //Tim quantity ung vowi productId trong card
+                                    quantity: carts.find(cart => {
+                                        //Do la doi tuong ne khong so sanh === duco nen chuyen ve string
+                                        return cart.productId.toString() === product._id.toString();
+                                    }).quantity
+                                }
+
+
+                            })
+                            // create new order
+                            const order = new Order({ userId, productsCart: prosCartMap });
+
+                            const priceTotal = prosCartMap.reduce((total, product) => {
+                                console.log(total, product.quantity, product.price)
+                                return total + product.quantity * product.price;
+                            }, 0)
+                            //Tao Thanh Toan
+
+                            const charge = stripe.charges.create({
+                                amount: priceTotal * 100,
+                                currency: 'usd',
+                                description: `THANH TOAN : ${order._id}`,
+                                source: token,
+                                metadata: { order_id: order._id.toString() }
+                            });
+
+                            //Luu order va xoa cart
+                            order.save()
+                                .then(result => {
+                                    console.log("Insert 1 new Order");
+                                    //Sau Khi Order Thanh Cong Thì Clear Cart
+                                    Cart.deleteMany({ userId: userId }).then(result => {
+                                        console.log("Clear Cart success");
+                                        res.redirect('/shop/orders');
+                                    })
+
+                                });
+                        });
+                }
+                else {
+                    res.redirect('/shop/cart');
+                }
+
+
+            })
+    } catch (err) {
+        console.log(err);
+    }
+}

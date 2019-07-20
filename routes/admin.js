@@ -16,6 +16,9 @@ router.get('/edit-product/:productId',isAuth,adminController.getEditProductContr
 /////Edit Get Product
 router.post('/edit-product',isAuth,adminController.postEditProductController);
 //Delete Product
-router.post('/delete-product/:productId',isAuth,adminController.deleteProductController);
+// router.post('/delete-product/:productId',isAuth,adminController.deleteProductController);
+//SU dung ly thuat async request de khong tar ve json khong load lai trang
+ router.delete('/product/:productId',isAuth,adminController.deleteProductController);
+
 
 module.exports = router;

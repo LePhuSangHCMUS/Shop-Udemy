@@ -105,13 +105,16 @@ exports.deleteProductController = function (req, res, next) {
                 Cart.deleteOne({ userId: user._id, productId: new ObjectID(productId) }).then(result => {
                     //========================
                     console.log("Delete Success");
-                    res.redirect('/shop/cart');
+                    // res.redirect('/admin/products')
+                    //Tra ve chuoi json ke qua khong load lai trang nua
+                    res.status(200).json({massage:'success',productId:productId});
+
 
                 })
             } catch (err) {
                 console.log(err);
                 console.log("Not delete");
+                res.status(500).json({message:'Deleting product fail'})
             }
-            res.redirect('/admin/products')
         })
 }

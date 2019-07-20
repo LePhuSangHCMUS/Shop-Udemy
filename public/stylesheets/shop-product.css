@@ -1,0 +1,95 @@
+:root {
+    --padding-btn-top-bottom: 0.5rem;
+    --padding-btn-right-left: 1rem;
+}
+
+.grid {
+    display        : flex;
+    flex-wrap      : wrap;
+    text-align     : center;
+    justify-content: space-around;
+}
+
+.card-product-item {
+    width     : 25%;
+    margin    : 2rem 0;
+    text-align: center;
+    border    : 3px solid rgba(228, 219, 219, 0.397);
+    box-shadow: -1px 2px 5px 3px rgba(240, 228, 240, 1);
+}
+
+.card-product-item .card-header {
+    margin: 1rem 0;
+}
+
+.card-product-item .card-header .product__title {
+    font-weight  : bold;
+    font-size    : 18px;
+    margin-bottom: 1rem;
+}
+
+.card-product-item .card-image {
+    width   : 80%;
+    height  : 200px;
+    overflow: hidden;
+    margin  : 0 auto;
+}
+
+.card-product-item .card-image img {
+    width: 100%;
+
+}
+
+.card-product-item .card-content .product__price {
+    margin: 1rem 0;
+}
+
+.card-product-item .card-content .product__description {
+    height  : 100px;
+    overflow: auto;
+}
+
+.card-product-item .card-action {
+    display        : flex;
+    justify-content: center;
+}
+
+.card-product-item .card-action .btn {
+    margin          : 1rem 1rem;
+    padding         : var(--padding-btn-top-bottom) var(--padding-btn-right-left);
+    border          : 1px solid#007BFF;
+    border-radius   : 4px;
+    background-color: white;
+    color           : #007BFF;
+    font-weight     : bold;
+
+}
+
+
+.card-product-item .card-action .btn:hover {
+    background-color: #007BFF;
+    cursor          : pointer;
+    color           : white;
+
+}
+
+/* PAGINATION */
+.pagination{
+    margin-bottom: 4rem;
+}
+.pagination .list-item {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination .list-item .item-page {
+    list-style-type: none;
+    margin: 0 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid gray;
+}
+.pagination .list-item .item-page a{
+    text-decoration: none;
+    color: rgb(33, 119, 231);
+    font-weight: bold;
+}
