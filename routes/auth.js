@@ -37,11 +37,12 @@ router.post('/signup', [
         'password',
         'Please enter a password with only number and text and least 5 characters'
     ).isLength({ min: 5 })
-    .isAlphanumeric(),
-    body(
-        'password',
-        'Please enter the same password and password as the same'
-    ).equals('confirmPassword'),
+    .isAlphanumeric()
+    //Khong check pass trung nhau nua vi dang co loi xay ra
+    // body(
+    //     'password',
+    //     'Please enter the same password and password as the same'
+    // ).equals('confirmPassword'),
     
 ], authController.postSignup);
 router.post('/verify', authController.postVerify);
