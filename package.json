@@ -35,7 +35,7 @@
     "pdfkit": "^0.10.0",
     "pug": "^2.0.4",
     "secure-random-string": "^1.1.2",
-    "sequelize": "^5.9.4",
+    "sequelize": "^5.15.1",
     "sqlstring": "^2.3.1",
     "stripe": "^7.4.0",
     "uuid": "^3.3.2"
